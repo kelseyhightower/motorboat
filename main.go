@@ -15,8 +15,9 @@ import (
 )
 
 var (
-	apiServer   string
-	nginxServer string
+	apiServer         string
+	nginxServer       string
+	nginxStatusServer string
 )
 
 type Object struct {
@@ -58,7 +59,7 @@ type Backend struct {
 }
 
 func NginxStatus() (*NginxResponse, error) {
-	resp, err := http.Get("http://104.154.85.118:9090/status")
+	resp, err := http.Get(fmt.Sprintf("http://%s/status", nginxStatusServer))
 	if err != nil {
 		return nil, err
 	}
@@ -82,6 +83,7 @@ func NginxStatus() (*NginxResponse, error) {
 func init() {
 	flag.StringVar(&apiServer, "api-server", "127.0.0.1:8080", "Kubernetes API server for watching endpoints. (ip:port)")
 	flag.StringVar(&nginxServer, "nginx-server", "", "Nginx server for managing backends. (ip:port)")
+	flag.StringVar(&nginxStatusServer, "nginx-status-server", "", "Nginx server for status. (ip:port)")
 }
 
 func main() {
@@ -155,7 +157,7 @@ func main() {
 
 				if !hasBackend {
 					log.Printf("removing backend %s [#%d] from %s ...", backend.Server, backend.ID, upstreamName)
-					url := fmt.Sprintf("http://104.154.85.118:32771/upstream_conf?remove=&upstream=%s&id=%d", upstreamName, backend.ID)
+					url := fmt.Sprintf("http://%s/upstream_conf?remove=&upstream=%s&id=%d", nginxServer, upstreamName, backend.ID)
 					resp, err := http.Get(url)
 					if err != nil {
 						log.Println(err)

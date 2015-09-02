@@ -16,4 +16,5 @@ spec:
           image: "b.gcr.io/kuar/motorboat:0.0.1"
           args: 
             - "--api-server=10.240.178.167:8080"
-            - "--nginx-server=104.154.85.118:32771"
+            - "--nginx-server=10.240.26.48:8080"
+            - "--nginx-status-server=10.240.26.48:9090"
