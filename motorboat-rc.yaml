@@ -1,0 +1,19 @@
+apiVersion: v1
+kind: ReplicationController
+metadata: 
+  name: motorboat
+spec:
+  replicas: 1
+  selector:
+    name: motorboat 
+  template:
+    metadata:
+      labels:
+         name: motorboat
+    spec:
+      containers: 
+        - name: "motorboat"
+          image: "b.gcr.io/kuar/motorboat:0.0.1"
+          args: 
+            - "--api-server=10.240.178.167:8080"
+            - "--nginx-server=104.154.85.118:32771"
